@@ -47,7 +47,6 @@ def load_ST_file(file_fold, count_file='filtered_feature_bc_matrix.h5', load_ima
     print('adata: (' + str(adata_h5.shape[0]) + ', ' + str(adata_h5.shape[1]) + ')')
     return adata_h5
 
-```
 # from scanpy
 def _download_visium_dataset(
     sample_id: str,
@@ -86,4 +85,3 @@ def load_visium_sge(sample_id='V1_Breast_Cancer_Block_A_Section_1', save_path='.
 
     print('adata: (' + str(adata.shape[0]) + ', ' + str(adata.shape[1]) + ')')
     return adata
-```
