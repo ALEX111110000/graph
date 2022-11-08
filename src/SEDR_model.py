@@ -91,7 +91,7 @@ class SEDR(nn.Module):
         hidden1 = self.gc1(feat_x, adj)
         return self.gc2(hidden1, adj), self.gc3(hidden1, adj), feat_x
 '''
-	def encoder(self, x, adj):
+	def encode(self, x, adj):
 		feat_x = self.relu(self.fc1(x.view(-1, 784)))
 		return feat_x   #*h1变成feat_x
         hidden1 = self.gc1(feat_x, adj)
