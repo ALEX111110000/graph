@@ -13,6 +13,7 @@ def target_distribution(batch):
     weight = (batch ** 2) / torch.sum(batch, 0)
     return (weight.t() / torch.sum(weight, 1)).t()
 
+lam = 1e-4
 
 def reconstruction_loss(decoded, x, W, h, lam):
   
