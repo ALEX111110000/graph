@@ -76,7 +76,8 @@ class SEDR_Train:
 
             loss_gcn = gcn_loss(preds=self.model.dc(latent_z), labels=self.adj_label, mu=mu,
                                 logvar=logvar, n_nodes=self.params.cell_num, norm=self.norm_value, mask=self.adj_label)
-            loss_rec = reconstruction_loss(de_feat, self.node_X)
+            W = model.state_dict()['fc1.weight']
+            loss_rec = reconstruction_loss(de_feat, self.node_X, W, latent_z, lam)     #decoded, x, W, h, lam
             loss = self.params.feat_w * loss_rec + self.params.gcn_w * loss_gcn
             loss.backward()
             self.optimizer.step()
@@ -139,7 +140,8 @@ class SEDR_Train:
             latent_z, mu, logvar, de_feat, out_q, _, _ = self.model(self.node_X, self.adj_norm)
             loss_gcn = gcn_loss(preds=self.model.dc(latent_z), labels=self.adj_label, mu=mu,
                                 logvar=logvar, n_nodes=self.params.cell_num, norm=self.norm_value, mask=self.adj_label)
-            loss_rec = reconstruction_loss(de_feat, self.node_X)
+            W = model.state_dict()['fc1.weight']
+            loss_rec = reconstruction_loss(de_feat, self.node_X, W, latent_z, lam)
             # clustering KL loss
             loss_kl = F.kl_div(out_q.log(), torch.tensor(tmp_p).to(self.device)).to(self.device)
             loss = self.params.gcn_w * loss_gcn + self.params.dec_kl_w * loss_kl + self.params.feat_w * loss_rec
