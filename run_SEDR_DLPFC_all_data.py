@@ -89,8 +89,8 @@ for proj_idx in range(len(proj_list)):
     adata_h5 = load_ST_file(file_fold=file_fold)
     adata_h5.var_names_make_unique()
 
-    adata_X = adata_preprocess(adata_h5, min_cells=5, pca_n_comps=params.cell_feat_dim)
-    graph_dict = graph_construction(adata_h5.obsm['spatial'], adata_h5.shape[0], params)
+    adata_X = adata_preprocess(adata_h5, min_cells=5, pca_n_comps=params.cell_feat_dim) #def adata_preprocess(i_adata, min_cells=3, pca_n_comps=300):
+    graph_dict = graph_construction(adata_h5.obsm['spatial'], adata_h5.shape[0], params) #
     params.save_path = mk_dir(f'{save_root}/{data_name}/SEDR')
 
     params.cell_num = adata_h5.shape[0]
