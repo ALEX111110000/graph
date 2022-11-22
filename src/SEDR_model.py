@@ -124,4 +124,44 @@ class SEDR(nn.Module):
         return z, mu, logvar, de_feat, q, feat_x, gnn_z
 
 
+def dense(x, n1, n2, name):
+    """
+    Used to create a dense layer.
+    :param x: input tensor to the dense layer
+    :param n1: no. of input neurons
+    :param n2: no. of output neurons
+    :param name: name of the entire dense layer.i.e, variable scope name.
+    :return: tensor with shape [batch_size, n2]
+    """
+    with tf.variable_scope(name, reuse=None):
+        # np.random.seed(1)
+        tf.set_random_seed(1)
+        weights = tf.get_variable("weights", shape=[n1, n2],
+                                  initializer=tf.random_normal_initializer(mean=0., stddev=0.01))
+        bias = tf.get_variable("bias", shape=[n2], initializer=tf.constant_initializer(0.0))
+        out = tf.add(tf.matmul(x, weights), bias, name='matmul')
+        return out
+
+
+class Discriminator(Model):
+    def __init__(self, inputdim, dc_hidden1_dim, dc_hidden2_dim, **kwargs):  #注意input_dim和Deeplinc函数的hidden2_dim要一样
+        super(Discriminator, self).__init__(**kwargs)
+
+        self.act = tf.nn.relu
+        self.input_dim = inputdim
+        self.dc_h1_dim = dc_hidden1_dim
+        self.dc_h2_dim = dc_hidden2_dim
+
+    def construct(self, inputs, reuse = False):
+        # with tf.name_scope('Discriminator'):
+        with tf.variable_scope('Discriminator'):
+            if reuse:
+                tf.get_variable_scope().reuse_variables()
+            # np.random.seed(1)
+            tf.set_random_seed(1)
+            dc_den1 = tf.nn.relu(dense(inputs, self.input_dim, self.dc_h1_dim, name='dc_den1'))  #125,150
+            dc_den2 = tf.nn.relu(dense(dc_den1, self.dc_h1_dim, self.dc_h2_dim, name='dc_den2'))  #150,125
+            output = dense(dc_den2, self.dc_h2_dim, 1, name='dc_output')
+            return output
+
 
